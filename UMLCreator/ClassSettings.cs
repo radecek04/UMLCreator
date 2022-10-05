@@ -19,6 +19,7 @@ namespace UMLCreator
         #endregion
         #region numeric data
         public readonly float CLASSNAME_HEIGHT = 28;
+        public readonly int RESIZE_BORDER = 7;
         public readonly int NAME_MARGIN = 5;
         public readonly int LINESPACING = 2;
         #endregion
@@ -38,5 +39,13 @@ namespace UMLCreator
         Private = '-',
         Public = '+',
         Protected = '#'
+    }
+
+    public enum ResizeMode
+    {
+        None = 0,
+        Horizontal = 1,
+        Vertical = 2,
+        Diagonal = 3
     }
 }

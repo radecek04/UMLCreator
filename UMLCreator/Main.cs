@@ -4,8 +4,12 @@ namespace UMLCreator
     {
         private LayerManager _layers = new LayerManager();
         private Class _selected = null;
+        private bool _resize = false;
         private int _xOffset = 0;
         private int _yOffset = 0;
+        private bool _xStart = false;
+        private bool _yStart = false;
+        private ResizeMode _resizeMode;
         private ClassSettings _settings = ClassSettings.Instance;
         public Main()
         {
@@ -22,6 +26,30 @@ namespace UMLCreator
                 else if (e.Y < c.Background.Y || e.Y >= c.Background.Y + c.Background.Height)
                     continue;
 
+                // Check collision with border and assing resize mode
+                // If horizontal is added to vertical it creates diagonal
+                if (e.X >= c.Background.X + c.Background.Width - _settings.RESIZE_BORDER)
+                {
+                    _resize = true;
+                    _resizeMode += (int)ResizeMode.Horizontal;
+                }
+                if (e.X < c.Background.X + _settings.RESIZE_BORDER)
+                {
+                    _resize = true;
+                    _resizeMode += (int)ResizeMode.Horizontal;
+                    _xStart = true;
+                }
+                if (e.Y >= c.Background.Y + c.Background.Height - _settings.RESIZE_BORDER)
+                {
+                    _resize = true;
+                    _resizeMode += (int)ResizeMode.Vertical;
+                }
+                if (e.Y < c.Background.Y + _settings.RESIZE_BORDER)
+                {
+                    _resize = true;
+                    _resizeMode += (int)ResizeMode.Vertical;
+                    _yStart = true;
+                }
                 _selected = c;
 
                 // Calculate offset from anchor of diagram node
@@ -39,23 +67,70 @@ namespace UMLCreator
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
             _selected = null;
+            _resize = false;
+            _resizeMode = ResizeMode.None;
+            _xStart = false;
+            _yStart = false;
         }
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
+            if (!_resize)
+            {
+                Cursor = Cursors.Default;
+
+                foreach (Class c in _layers)
+                {
+                    // Check collision
+                    if (e.X < c.Background.X || e.X >= c.Background.X + c.Background.Width)
+                        continue;
+                    else if (e.Y < c.Background.Y || e.Y >= c.Background.Y + c.Background.Height)
+                        continue;
+
+                    // Check collision on border and set cursor
+                    if (e.X >= c.Background.X + c.Background.Width - _settings.RESIZE_BORDER)
+                    {
+                        Cursor = Cursors.SizeWE;
+                        if (e.Y < c.Background.Y + _settings.RESIZE_BORDER)
+                            Cursor = Cursors.SizeNESW;
+                        else if (e.Y >= c.Background.Y + c.Background.Height - _settings.RESIZE_BORDER)
+                            Cursor = Cursors.SizeNWSE;
+                    }
+                    else if (e.X < c.Background.X + _settings.RESIZE_BORDER)
+                    {
+                        Cursor = Cursors.SizeWE;
+                        if (e.Y >= c.Background.Y + c.Background.Height - _settings.RESIZE_BORDER)
+                            Cursor = Cursors.SizeNESW;
+                        if (e.Y < c.Background.Y + _settings.RESIZE_BORDER)
+                            Cursor = Cursors.SizeNWSE;
+                    }
+                    else if (e.Y >= c.Background.Y + c.Background.Height - _settings.RESIZE_BORDER)
+                    {
+                        Cursor = Cursors.SizeNS;
+                    }
+                    else if (e.Y < c.Background.Y + _settings.RESIZE_BORDER)
+                    {
+                        Cursor = Cursors.SizeNS;
+                    }
+                }
+            }
+
             if (_selected == null)
                 return;
 
-            _selected.Background = new Rectangle(e.X - _xOffset, e.Y - _yOffset, _selected.Background.Width, _selected.Background.Height);
+            if(_resize)
+                _selected.Resize(e.X - _selected.Background.X, e.Y - _selected.Background.Y, _resizeMode, _xStart, _yStart, pictureBox1);
+            else
+                _selected.Background = new Rectangle(e.X - _xOffset, e.Y - _yOffset, _selected.Background.Width, _selected.Background.Height);
             
             // Keep diagram node inside editor box
-            if (e.X - _xOffset < 0)
+            if (_selected.Background.X < 0)
                 _selected.Background = new Rectangle(0, _selected.Background.Y, _selected.Background.Width, _selected.Background.Height);
-            else if (e.X - _xOffset + _selected.Background.Width >= pictureBox1.Width)
+            else if (_selected.Background.X + _selected.Background.Width >= pictureBox1.Width)
                 _selected.Background = new Rectangle(pictureBox1.Width - _selected.Background.Width, _selected.Background.Y, _selected.Background.Width, _selected.Background.Height);
-            if (e.Y - _yOffset < 0)
+            if (_selected.Background.Y < 0)
                 _selected.Background = new Rectangle(_selected.Background.X, 0, _selected.Background.Width, _selected.Background.Height);
-            else if (e.Y - _yOffset + _selected.Background.Height >= pictureBox1.Height)
+            else if (_selected.Background.Y + _selected.Background.Height >= pictureBox1.Height)
                 _selected.Background = new Rectangle(_selected.Background.X, pictureBox1.Height - _selected.Background.Height, _selected.Background.Width, _selected.Background.Height);
             
             this.pictureBox1.Refresh();
@@ -66,8 +141,6 @@ namespace UMLCreator
             Graphics g = e.Graphics;
             foreach(Class c in _layers)
             {
-                // automatically adjust size of diagram node
-                c.Adjust();
                 c.Draw(g);
             }
         }
@@ -76,14 +149,20 @@ namespace UMLCreator
         {
             // TODO editor
             Class c = new Class("Strašnì dlouhý text", false, pictureBox1.CreateGraphics());
-            c.Properties.Add(new Property(AccessModifier.Public, "int", "Countasdhjgfasdhgasvhgghsahgdfsagdjhfasghdfgasdhgasdhagsjdasgjdhghasdjhgasjhdvasjhdgvasjhdggasjdhasgjdhgasjdhdguaszgdjhasgdhjasgdjhasgdjhsagdjhsagdjshagdjasgdjhasgdjhasgdjhasgdjas"));
+            c.Properties.Add(new Property(AccessModifier.Public, "int", "COunt"));
             c.Properties.Add(new Property(AccessModifier.Private, "int", "Check"));
             c.Properties.Add(new Property(AccessModifier.Protected, "int", "This"));
             c.Methods.Add(new Method(AccessModifier.Public, "int", "Count"));
             c.Methods.Add(new Method(AccessModifier.Private, "int", "Check"));
             c.Methods.Add(new Method(AccessModifier.Protected, "int", "This"));
             _layers.Add(c);
+            c.Adjust();
             this.pictureBox1.Refresh();
+        }
+
+        private void pictureBox1_MouseLeave(object sender, EventArgs e)
+        {
+            Cursor = Cursors.Default;
         }
     }
 }

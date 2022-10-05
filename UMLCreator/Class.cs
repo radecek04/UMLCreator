@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Accessibility;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -15,6 +17,10 @@ namespace UMLCreator
         public List<Method> Methods { get; set; }
         public bool IsAbstract { get; set; }
         public Rectangle Background { get; set; }
+
+        public int MinWidth { get; private set; }
+        public int MinHeight { get; private set; }
+
         private ClassSettings _settings;
         private Graphics _graphics;
 
@@ -86,13 +92,62 @@ namespace UMLCreator
                     maxTextWidth = current;
             }
 
+
+            MinWidth = (int)maxTextWidth.Width + _settings.NAME_MARGIN * 2;
+            MinHeight = (int)totalHeight + _settings.LINESPACING;
+
             // If text overflows through current width extend width to maximum text size plus margin
-            if (maxTextWidth.Width >= Background.Width - _settings.NAME_MARGIN * 2)
-                Background = new Rectangle(Background.X, Background.Y, (int)maxTextWidth.Width + _settings.NAME_MARGIN * 2, Background.Height);
+            if (MinWidth >= Background.Width - _settings.NAME_MARGIN * 2)
+                Background = new Rectangle(Background.X, Background.Y, MinWidth, Background.Height);
 
             // If text overflows through current height extend height to total calculated height
-            if(totalHeight >= Background.Height)
-                Background = new Rectangle(Background.X, Background.Y, Background.Width, (int)totalHeight - _settings.LINESPACING);
+            if(MinHeight >= Background.Height)
+                Background = new Rectangle(Background.X, Background.Y, Background.Width, MinHeight);
+        }
+
+        public void Resize(int width, int height, ResizeMode mode, bool xStart, bool yStart, PictureBox p)
+        {
+            int xSize;
+            int ySize;
+
+            if (!xStart)
+                xSize = width < MinWidth ? MinWidth : width;
+            else
+                xSize = Background.Width - width;
+            if (!yStart)
+                ySize = height < MinHeight ? MinHeight : height;
+            else
+                ySize = Background.Height - height;
+
+            int x = xStart && xSize >= MinWidth ? Background.X + width : Background.X;
+            int y = yStart && ySize >= MinHeight ? Background.Y + height : Background.Y;
+
+            if (x < 0)
+            {
+                x = 0;
+                xSize = 0;
+            }
+            if (y < 0)
+            {
+                y = 0;
+                ySize = 0;
+            }
+
+            int finalWidth = mode != ResizeMode.Vertical && xSize >= MinWidth ? xSize : Background.Width;
+            int finalHeight = mode != ResizeMode.Horizontal && ySize >= MinHeight ? ySize : Background.Height;
+
+            if(x + finalWidth > p.Width)
+            {
+                x = Background.X;
+                finalWidth = p.Width - x;
+            }
+            if (y + finalHeight > p.Height)
+            {
+                y = Background.Y;
+                finalHeight = p.Height - y;
+            }
+
+            Background = new Rectangle(x, y, finalWidth, finalHeight);
         }
     }
 }
