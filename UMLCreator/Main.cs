@@ -24,7 +24,7 @@ namespace UMLCreator
 
                 _selected = c;
 
-                // Calculate offset from anchor of diagram node
+                // Calculate offset of mouse position from anchor of diagram node
                 _xOffset = e.X - c.Background.X;
                 _yOffset = e.Y - c.Background.Y;
             }
@@ -46,6 +46,7 @@ namespace UMLCreator
             if (_selected == null)
                 return;
 
+            // Set background position relative to mouse cursor
             _selected.Background = new Rectangle(e.X - _xOffset, e.Y - _yOffset, _selected.Background.Width, _selected.Background.Height);
             
             // Keep diagram node inside editor box
@@ -75,8 +76,8 @@ namespace UMLCreator
         private void btn_Add_Click(object sender, EventArgs e)
         {
             // TODO editor
-            Class c = new Class("Strašnì dlouhý text", false, pictureBox1.CreateGraphics());
-            c.Properties.Add(new Property(AccessModifier.Public, "int", "Countasdhjgfasdhgasvhgghsahgdfsagdjhfasghdfgasdhgasdhagsjdasgjdhghasdjhgasjhdvasjhdgvasjhdggasjdhasgjdhgasjdhdguaszgdjhasgdhjasgdjhasgdjhsagdjhsagdjshagdjasgdjhasgdjhasgdjhasgdjas"));
+            Class c = new Class("Strašnì dlouhý text", true, pictureBox1.CreateGraphics());
+            c.Properties.Add(new Property(AccessModifier.Public, "int", "Count"));
             c.Properties.Add(new Property(AccessModifier.Private, "int", "Check"));
             c.Properties.Add(new Property(AccessModifier.Protected, "int", "This"));
             c.Methods.Add(new Method(AccessModifier.Public, "int", "Count"));
