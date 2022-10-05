@@ -52,7 +52,7 @@ namespace UMLCreator
                 }
                 _selected = c;
 
-                // Calculate offset from anchor of diagram node
+                // Calculate offset of mouse position from anchor of diagram node
                 _xOffset = e.X - c.Background.X;
                 _yOffset = e.Y - c.Background.Y;
             }
