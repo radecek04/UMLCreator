@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace UMLCreator
 {
     public partial class Main : Form
@@ -17,7 +19,7 @@ namespace UMLCreator
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
-        {
+        {        
             foreach(Class c in _layers)
             {
                 // Check collision
@@ -25,6 +27,8 @@ namespace UMLCreator
                     continue;
                 else if (e.Y < c.Background.Y || e.Y >= c.Background.Y + c.Background.Height)
                     continue;
+
+                _resize = false;
 
                 // Check collision with border and assing resize mode
                 // If horizontal is added to vertical it creates diagonal
@@ -75,10 +79,9 @@ namespace UMLCreator
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
+            Cursor tmp = Cursors.Default;
             if (!_resize)
             {
-                Cursor = Cursors.Default;
-
                 foreach (Class c in _layers)
                 {
                     // Check collision
@@ -87,32 +90,36 @@ namespace UMLCreator
                     else if (e.Y < c.Background.Y || e.Y >= c.Background.Y + c.Background.Height)
                         continue;
 
+                    tmp = Cursors.Default;
+
                     // Check collision on border and set cursor
                     if (e.X >= c.Background.X + c.Background.Width - _settings.RESIZE_BORDER)
                     {
-                        Cursor = Cursors.SizeWE;
+                        tmp = Cursors.SizeWE;
                         if (e.Y < c.Background.Y + _settings.RESIZE_BORDER)
-                            Cursor = Cursors.SizeNESW;
+                            tmp = Cursors.SizeNESW;
                         else if (e.Y >= c.Background.Y + c.Background.Height - _settings.RESIZE_BORDER)
-                            Cursor = Cursors.SizeNWSE;
+                            tmp = Cursors.SizeNWSE;
                     }
                     else if (e.X < c.Background.X + _settings.RESIZE_BORDER)
                     {
-                        Cursor = Cursors.SizeWE;
+                        tmp = Cursors.SizeWE;
                         if (e.Y >= c.Background.Y + c.Background.Height - _settings.RESIZE_BORDER)
-                            Cursor = Cursors.SizeNESW;
+                            tmp = Cursors.SizeNESW;
                         if (e.Y < c.Background.Y + _settings.RESIZE_BORDER)
-                            Cursor = Cursors.SizeNWSE;
+                            tmp = Cursors.SizeNWSE;
+                        
                     }
                     else if (e.Y >= c.Background.Y + c.Background.Height - _settings.RESIZE_BORDER)
                     {
-                        Cursor = Cursors.SizeNS;
+                        tmp = Cursors.SizeNS;
                     }
                     else if (e.Y < c.Background.Y + _settings.RESIZE_BORDER)
                     {
-                        Cursor = Cursors.SizeNS;
+                        tmp = Cursors.SizeNS;
                     }
                 }
+                Cursor = tmp;
             }
 
             if (_selected == null)

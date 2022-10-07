@@ -57,8 +57,12 @@ namespace UMLCreator
             }
 
             // Draw divider between properties and methods
-            g.DrawLine(_settings.DIVIDER_PEN, Background.X, lineY, Background.X + Background.Width - 1, lineY);
-            lineY += _settings.DIVIDER_PEN.Width;
+            if (Properties.Count > 0 && Methods.Count > 0)
+            {
+                g.DrawLine(_settings.DIVIDER_PEN, Background.X, lineY, Background.X + Background.Width - 1, lineY);
+                lineY += _settings.DIVIDER_PEN.Width;
+            }
+
 
             // Draw in all methods of the class
             foreach (Method method in Methods)
