@@ -114,6 +114,7 @@ namespace UMLCreator
             int xSize;
             int ySize;
 
+            // Calculate coeficient depending on where user resized
             if (!xStart)
                 xSize = width < MinWidth ? MinWidth : width;
             else
@@ -123,9 +124,12 @@ namespace UMLCreator
             else
                 ySize = Background.Height - height;
 
+
+            // Calculate x and y cords
             int x = xStart && xSize >= MinWidth ? Background.X + width : Background.X;
             int y = yStart && ySize >= MinHeight ? Background.Y + height : Background.Y;
 
+            // Adjust to picturebox
             if (x < 0)
             {
                 x = 0;
@@ -137,9 +141,12 @@ namespace UMLCreator
                 ySize = 0;
             }
 
+            // Calculate width and height
             int finalWidth = mode != ResizeMode.Vertical && xSize >= MinWidth ? xSize : Background.Width;
             int finalHeight = mode != ResizeMode.Horizontal && ySize >= MinHeight ? ySize : Background.Height;
 
+
+            // Adjust to picturebox
             if(x + finalWidth > p.Width)
             {
                 x = Background.X;
@@ -151,6 +158,7 @@ namespace UMLCreator
                 finalHeight = p.Height - y;
             }
 
+            // set cords and size to background
             Background = new Rectangle(x, y, finalWidth, finalHeight);
         }
     }

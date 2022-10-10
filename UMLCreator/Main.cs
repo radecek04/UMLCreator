@@ -57,6 +57,7 @@ namespace UMLCreator
                     _yStart = true;
                 }
 
+                // Set drag to true if resize false and otherwise
                 _drag = !_resize;
 
                 _selected = c;
@@ -72,6 +73,7 @@ namespace UMLCreator
 
                 if (e.Clicks == 2)
                 {
+                    // Start new window with edit
                     EditClass();
                     _drag = false;
                 }
@@ -81,6 +83,7 @@ namespace UMLCreator
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
+            // Reset all variables
             _drag = false;
             _resize = false;
             _resizeMode = ResizeMode.None;
@@ -164,10 +167,12 @@ namespace UMLCreator
 
         private void btn_Add_Click(object sender, EventArgs e)
         {
+            // Create empty class
             Class c = new Class("", false, pictureBox1.CreateGraphics());
             EditForm ef = new EditForm(c);
             if(ef.ShowDialog() == DialogResult.OK)
             {
+                // Add to layer manager
                 _layers.Add(c);
                 c.Adjust();
                 this.pictureBox1.Refresh();
@@ -193,10 +198,10 @@ namespace UMLCreator
 
         private void EditClass()
         {
+            // Show new dialog with edit
             EditForm ef = new EditForm(_selected);
             if (ef.ShowDialog() == DialogResult.OK)
             {
-                ef.ShowDialog();
                 _selected.Adjust();
             }
         }

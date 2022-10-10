@@ -24,6 +24,7 @@ namespace UMLCreator
 
             _current = current;
 
+            // Set all fields to class properties
             this.textBox_Class_Name.Text = _current.Name;
             this.checkBox_Abstract.Checked = _current.IsAbstract;
 
@@ -50,6 +51,7 @@ namespace UMLCreator
 
             this._IsProperty = true;
 
+            // Load selected property
             this.errorProvider.Clear();
             Property current = this.listBox_Properties.SelectedItem as Property;
             this.textBox_Name.Text = current.Name;
@@ -76,6 +78,7 @@ namespace UMLCreator
 
             this._IsProperty = false;
 
+            // Load selected method
             this.errorProvider.Clear();
             Method current = this.listBox_Methods.SelectedItem as Method;
             this.textBox_Name.Text = current.Name;
@@ -86,6 +89,7 @@ namespace UMLCreator
 
         private void btn_Add_Property_Click(object sender, EventArgs e)
         {
+            // add new dummy property and select it
             _properties.Add(new Property(AccessModifier.Public, "int", "Property"));
             listBox_Properties.ClearSelected();
             listBox_Properties.SelectedIndex = listBox_Properties.Items.Count - 1;
@@ -101,6 +105,7 @@ namespace UMLCreator
 
         private void btn_Add_Method_Click(object sender, EventArgs e)
         {
+            // add new dummy method and select it
             _methods.Add(new Method(AccessModifier.Public, "void", "Method"));
             listBox_Methods.ClearSelected();
             listBox_Methods.SelectedIndex = listBox_Methods.Items.Count - 1;
@@ -121,6 +126,7 @@ namespace UMLCreator
                 if (listBox_Properties.SelectedItem == null)
                     return;
 
+                // Update property name and refresh list box
                 Property p = listBox_Properties.SelectedItem as Property;
                 p.Name = textBox_Name.Text;
 
@@ -132,6 +138,7 @@ namespace UMLCreator
                 if (listBox_Methods.SelectedItem == null)
                     return;
 
+                // Update method name and refresh list box
                 Method m = listBox_Methods.SelectedItem as Method;
                 m.Name = textBox_Name.Text;
 
@@ -147,6 +154,7 @@ namespace UMLCreator
                 if (listBox_Properties.SelectedItem == null)
                     return;
 
+                // Update property type and refresh list box
                 Property p = listBox_Properties.SelectedItem as Property;
                 p.Type = textBox_Type.Text;
 
@@ -157,6 +165,8 @@ namespace UMLCreator
             {
                 if (listBox_Methods.SelectedItem == null)
                     return;
+
+                // Update method type and refresh list box
                 Method m = listBox_Methods.SelectedItem as Method;
                 m.Type = textBox_Type.Text;
 
@@ -172,6 +182,7 @@ namespace UMLCreator
                 if (listBox_Properties.SelectedItem == null)
                     return;
 
+                // Update property access modifier and refresh list box
                 Property p = listBox_Properties.SelectedItem as Property;
                 p.Access = Enum.Parse<AccessModifier>(comboBox_Access.SelectedValue.ToString());
 
@@ -180,6 +191,7 @@ namespace UMLCreator
             }
             else
             {
+                // Update method access modifier and refresh list box
                 if (listBox_Methods.SelectedItem == null)
                     return;
                 Method m = listBox_Methods.SelectedItem as Method;
@@ -192,6 +204,7 @@ namespace UMLCreator
 
         private void btn_Save_Click(object sender, EventArgs e)
         {
+            // Save all to class, return dialog result OK
             _current.Name = this.textBox_Class_Name.Text;
             _current.IsAbstract = this.checkBox_Abstract.Checked;
 
@@ -204,6 +217,7 @@ namespace UMLCreator
 
         private void btn_Cancel_Click(object sender, EventArgs e)
         {
+            // Close with no saving
             this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
