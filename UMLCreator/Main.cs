@@ -6,6 +6,7 @@ namespace UMLCreator
     {
         private LayerManager _layers = new LayerManager();
         private Class _selected = null;
+        private bool _drag = false;
         private bool _resize = false;
         private int _xOffset = 0;
         private int _yOffset = 0;
@@ -19,7 +20,8 @@ namespace UMLCreator
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
-        {        
+        {
+            _selected = null;
             foreach(Class c in _layers)
             {
                 // Check collision
@@ -54,6 +56,9 @@ namespace UMLCreator
                     _resizeMode += (int)ResizeMode.Vertical;
                     _yStart = true;
                 }
+
+                _drag = !_resize;
+
                 _selected = c;
 
                 // Calculate offset of mouse position from anchor of diagram node
@@ -64,13 +69,19 @@ namespace UMLCreator
             {
                 // If collision is triggered move diagram node to top layer and refresh
                 _layers.MoveUp(_selected);
-                this.pictureBox1.Refresh();
+
+                if (e.Clicks == 2)
+                {
+                    EditClass();
+                    _drag = false;
+                }
             }
+            this.pictureBox1.Refresh();
         }
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
-            _selected = null;
+            _drag = false;
             _resize = false;
             _resizeMode = ResizeMode.None;
             _xStart = false;
@@ -122,14 +133,13 @@ namespace UMLCreator
                 Cursor = tmp;
             }
 
-            if (_selected == null)
+            if (_resize)
+                _selected.Resize(e.X - _selected.Background.X, e.Y - _selected.Background.Y, _resizeMode, _xStart, _yStart, pictureBox1);
+            else if (_drag)
+                _selected.Background = new Rectangle(e.X - _xOffset, e.Y - _yOffset, _selected.Background.Width, _selected.Background.Height);
+            else
                 return;
 
-            if(_resize)
-                _selected.Resize(e.X - _selected.Background.X, e.Y - _selected.Background.Y, _resizeMode, _xStart, _yStart, pictureBox1);
-            else
-                _selected.Background = new Rectangle(e.X - _xOffset, e.Y - _yOffset, _selected.Background.Width, _selected.Background.Height);
-            
             // Keep diagram node inside editor box
             if (_selected.Background.X < 0)
                 _selected.Background = new Rectangle(0, _selected.Background.Y, _selected.Background.Width, _selected.Background.Height);
@@ -148,28 +158,47 @@ namespace UMLCreator
             Graphics g = e.Graphics;
             foreach(Class c in _layers)
             {
-                c.Draw(g);
+                c.Draw(g, c == _selected);
             }
         }
 
         private void btn_Add_Click(object sender, EventArgs e)
         {
-            // TODO editor
-            Class c = new Class("Strašnì dlouhý text", false, pictureBox1.CreateGraphics());
-            c.Properties.Add(new Property(AccessModifier.Public, "int", "COunt"));
-            c.Properties.Add(new Property(AccessModifier.Private, "int", "Check"));
-            c.Properties.Add(new Property(AccessModifier.Protected, "int", "This"));
-            c.Methods.Add(new Method(AccessModifier.Public, "int", "Count"));
-            c.Methods.Add(new Method(AccessModifier.Private, "int", "Check"));
-            c.Methods.Add(new Method(AccessModifier.Protected, "int", "This"));
-            _layers.Add(c);
-            c.Adjust();
+            Class c = new Class("", false, pictureBox1.CreateGraphics());
+            EditForm ef = new EditForm(c);
+            if(ef.ShowDialog() == DialogResult.OK)
+            {
+                _layers.Add(c);
+                c.Adjust();
+                this.pictureBox1.Refresh();
+            }
+        }
+
+
+        private void btn_Remove_Click(object sender, EventArgs e)
+        {
+            if (_selected == null)
+                return;
+
+            // Remove class from view
+            _layers.Remove(_selected);
             this.pictureBox1.Refresh();
         }
 
         private void pictureBox1_MouseLeave(object sender, EventArgs e)
         {
+            // Set cursor to default when leaving the picturebox
             Cursor = Cursors.Default;
+        }
+
+        private void EditClass()
+        {
+            EditForm ef = new EditForm(_selected);
+            if (ef.ShowDialog() == DialogResult.OK)
+            {
+                ef.ShowDialog();
+                _selected.Adjust();
+            }
         }
     }
 }

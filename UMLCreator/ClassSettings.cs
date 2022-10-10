@@ -12,6 +12,10 @@ namespace UMLCreator
         public readonly Pen BORDER_PEN = new Pen(Brushes.Black, 2);
         public readonly Pen DIVIDER_PEN = new Pen(Brushes.Black, 1);
         #endregion
+        #region brushes
+        public readonly Brush CLASS_BRUSH = Brushes.DeepSkyBlue;
+        public readonly Brush SELECTED_CLASS_BRUSH = Brushes.SeaGreen;
+        #endregion
         #region fonts
         public readonly Font FONT = new Font("Cascadia Code", 8);
         public readonly Font NAME_FONT = new Font("Cascadia Code", 12);
@@ -24,7 +28,7 @@ namespace UMLCreator
         public readonly int LINESPACING = 2;
         #endregion
 
-        public readonly Rectangle BACKGROUND = new Rectangle(0, 0, 100, 150);
+        public readonly Rectangle BACKGROUND = new Rectangle(0, 0, 1, 1);
 
         public static readonly ClassSettings Instance = new ClassSettings();
         private ClassSettings()

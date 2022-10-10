@@ -12,7 +12,7 @@ namespace UMLCreator
 {
     public class Class
     {
-        public string Name { get; private set; }
+        public string Name { get; set; }
         public List<Property> Properties { get; set; }
         public List<Method> Methods { get; set; }
         public bool IsAbstract { get; set; }
@@ -37,10 +37,10 @@ namespace UMLCreator
             Adjust();
         }
 
-        public void Draw(Graphics g)
+        public void Draw(Graphics g, bool selected)
         {
             // Draw background for class diagram node
-            g.FillRectangle(Brushes.DeepSkyBlue, Background);
+            g.FillRectangle(selected ? _settings.SELECTED_CLASS_BRUSH : _settings.CLASS_BRUSH, Background); ;
             g.DrawRectangle(_settings.BORDER_PEN, Background);
 
             // Draw in name of the class
@@ -83,7 +83,7 @@ namespace UMLCreator
             foreach(Property property in Properties)
             {
                 SizeF current = _graphics.MeasureString(property.ToString(), _settings.FONT);
-                totalHeight += current.Height + _settings.LINESPACING;
+                totalHeight += (int)current.Height + _settings.LINESPACING;
                 if (maxTextWidth.Width < current.Width)
                     maxTextWidth = current;
             }
@@ -91,14 +91,14 @@ namespace UMLCreator
             foreach (Method method in Methods)
             {
                 SizeF current = _graphics.MeasureString(method.ToString(), _settings.FONT);
-                totalHeight += current.Height + _settings.LINESPACING;
+                totalHeight += (int)current.Height + _settings.LINESPACING;
                 if (maxTextWidth.Width < current.Width)
                     maxTextWidth = current;
             }
 
 
             MinWidth = (int)maxTextWidth.Width + _settings.NAME_MARGIN * 2;
-            MinHeight = (int)totalHeight + _settings.LINESPACING;
+            MinHeight = (int)totalHeight + _settings.LINESPACING * 2;
 
             // If text overflows through current width extend width to maximum text size plus margin
             if (MinWidth >= Background.Width - _settings.NAME_MARGIN * 2)

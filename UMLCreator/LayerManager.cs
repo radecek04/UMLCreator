@@ -77,6 +77,20 @@ namespace UMLCreator
             this.Remove(c);
             this.Add(c);
         }
+        public bool Contains(string s)
+        {
+            LayerNode current = _first;
+            bool found = false;
+            while(current != null)
+            {
+                found = current.Value.Name == s;
+                if (found)
+                    break;
+                current = current.Next;
+            }
+
+            return found;
+        }
     }
 
     public class LayerNode
