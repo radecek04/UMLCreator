@@ -11,14 +11,14 @@ using System.Windows.Forms;
 
 namespace UMLCreator
 {
-    public partial class EditForm : Form
+    public partial class Class : Form
     {
         private int _lastIndex = -1;
         private bool _IsProperty = false;
         private Class _current;
         private BindingList<Property> _properties;
         private BindingList<Method> _methods;
-        public EditForm(Class current)
+        public Class(Class current)
         {
             InitializeComponent();
 

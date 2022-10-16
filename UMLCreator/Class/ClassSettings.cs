@@ -11,6 +11,10 @@ namespace UMLCreator
         #region pens
         public readonly Pen BORDER_PEN = new Pen(Brushes.Black, 2);
         public readonly Pen DIVIDER_PEN = new Pen(Brushes.Black, 1);
+        public readonly Pen LINE_PEN = new Pen(Brushes.Black, 2);
+        public readonly Pen LINE_PEN_DASHED = new Pen(Brushes.Black, 2);
+        public readonly Pen LINE_PEN_SELECTED = new Pen(Brushes.Red, 2);
+        public readonly Pen LINE_PEN_DASHED_SELECTED = new Pen(Brushes.Red, 2);
         #endregion
         #region brushes
         public readonly Brush CLASS_BRUSH = Brushes.DeepSkyBlue;
@@ -26,6 +30,12 @@ namespace UMLCreator
         public readonly int RESIZE_BORDER = 7;
         public readonly int NAME_MARGIN = 5;
         public readonly int LINESPACING = 2;
+        public readonly int ANCHOR_WIDTH = 10;
+        public readonly int ANCHOR_HEIGHT = 15;
+        public readonly int ANCHOR_ARROW_HEAD = 7;
+        public readonly int LINE_ENDING_LENGTH = 10;
+        public readonly int LINE_ENDING_WIDTH = 20;
+        public readonly int LINE_MARGIN = 5;
         #endregion
 
         public readonly Rectangle BACKGROUND = new Rectangle(0, 0, 1, 1);
@@ -35,6 +45,8 @@ namespace UMLCreator
         {
             BORDER_PEN.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
             DIVIDER_PEN.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
+            LINE_PEN_DASHED.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+            LINE_PEN_DASHED_SELECTED.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
         }
     }
 

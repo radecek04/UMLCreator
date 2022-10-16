@@ -21,6 +21,7 @@ namespace UMLCreator
         public int MinWidth { get; private set; }
         public int MinHeight { get; private set; }
 
+        private List<ClassAnchor> _anchors;
         private ClassSettings _settings;
         private Graphics _graphics;
 
@@ -33,6 +34,16 @@ namespace UMLCreator
             this._settings = ClassSettings.Instance;
             this.Background = _settings.BACKGROUND;
             this._graphics = graphics;
+            this._anchors = new List<ClassAnchor>();
+
+            _anchors.Add(new ClassAnchor(this, Background.X + Background.Width / 2,
+            Background.Y, 0, -1));
+            _anchors.Add(new ClassAnchor(this, Background.X,
+            Background.Y + Background.Height / 2, -1, 0));
+            _anchors.Add(new ClassAnchor(this, Background.X + Background.Width,
+            Background.Y + Background.Height / 2, 1, 0));
+            _anchors.Add(new ClassAnchor(this, Background.X + Background.Width / 2,
+            Background.Y + Background.Height, 0, 1));
 
             Adjust();
         }
@@ -70,6 +81,15 @@ namespace UMLCreator
                 g.DrawString(method.ToString(), _settings.FONT, Brushes.Black, _settings.NAME_MARGIN + Background.X, lineY + _settings.LINESPACING);
                 lineY += (int)g.MeasureString(method.ToString(), _settings.FONT).Height + _settings.LINESPACING;
             }
+
+            _anchors[0].X = Background.X + Background.Width / 2;
+            _anchors[0].Y = Background.Y;
+            _anchors[1].X = Background.X;
+            _anchors[1].Y = Background.Y + Background.Height / 2;
+            _anchors[2].X = Background.X + Background.Width;
+            _anchors[2].Y = Background.Y + Background.Height / 2;
+            _anchors[3].X = Background.X + Background.Width / 2;
+            _anchors[3].Y = Background.Y + Background.Height;
         }
 
         public void Adjust()
@@ -107,6 +127,15 @@ namespace UMLCreator
             // If text overflows through current height extend height to total calculated height
             if(MinHeight >= Background.Height)
                 Background = new Rectangle(Background.X, Background.Y, Background.Width, MinHeight);
+
+            _anchors[0].X = Background.X + Background.Width / 2;
+            _anchors[0].Y = Background.Y;
+            _anchors[1].X = Background.X;
+            _anchors[1].Y = Background.Y + Background.Height / 2;
+            _anchors[2].X = Background.X + Background.Width;
+            _anchors[2].Y = Background.Y + Background.Height / 2;
+            _anchors[3].X = Background.X + Background.Width / 2;
+            _anchors[3].Y = Background.Y + Background.Height;
         }
 
         public void Resize(int width, int height, ResizeMode mode, bool xStart, bool yStart, PictureBox p)
@@ -160,6 +189,44 @@ namespace UMLCreator
 
             // set cords and size to background
             Background = new Rectangle(x, y, finalWidth, finalHeight);
+        }
+
+        public void DrawAnchors(Graphics g)
+        {
+            foreach(var anchor in _anchors)
+            {
+                anchor.Draw(g);
+            }
+        }
+
+        public void DrawPoints(Graphics g)
+        {
+            foreach (var anchor in _anchors)
+            {
+                anchor.DrawPoint(g);
+            }
+        }
+
+        public ClassAnchor? CheckAnchorCollison(int x, int y)
+        {
+            ClassAnchor? output = null;
+            foreach(var anchor in _anchors)
+            {
+                if(anchor.CheckCollision(x,y))
+                    output = anchor;
+            }
+            return output;
+        }
+
+        public ClassAnchor? CheckPointCollison(int x, int y)
+        {
+            ClassAnchor? output = null;
+            foreach (var anchor in _anchors)
+            {
+                if (anchor.CheckPointCollision(x, y))
+                    output = anchor;
+            }
+            return output;
         }
     }
 }
