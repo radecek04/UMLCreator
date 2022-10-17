@@ -64,8 +64,6 @@ namespace UMLCreator.Relationships
                     up.Y - _settings.LINE_MARGIN < y && down.Y + _settings.LINE_MARGIN >= y)
                     return true;
 
-                Debug.WriteLine($"No Collision: {x} {y}");
-
                 return false;
             }
             else if (Math.Abs(StartAnchor.YCoeficient) == Math.Abs(EndAnchor.YCoeficient) && StartAnchor.YCoeficient != 0)
@@ -85,7 +83,6 @@ namespace UMLCreator.Relationships
                     left.X - _settings.LINE_MARGIN < x && right.X + _settings.LINE_MARGIN >= x)
                     return true;
 
-                Debug.WriteLine($"No Collision: {x} {y}");
                 return false;
             }
             else

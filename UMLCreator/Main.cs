@@ -300,7 +300,7 @@ namespace UMLCreator
         {
             // Create empty class
             Class c = new Class("", false, pictureBox1.CreateGraphics());
-            Class ef = new Class(c);
+            Class ef = new Class(c, _layers);
             if(ef.ShowDialog() == DialogResult.OK)
             {
                 // Add to layer manager
@@ -337,7 +337,7 @@ namespace UMLCreator
         private void EditClass()
         {
             // Show new dialog with edit
-            Class ef = new Class(_selected);
+            Class ef = new Class(_selected, _layers);
             if (ef.ShowDialog() == DialogResult.OK)
             {
                 _selected.Adjust();

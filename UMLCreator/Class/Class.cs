@@ -10,7 +10,7 @@ using static System.Windows.Forms.LinkLabel;
 
 namespace UMLCreator
 {
-    public class Class
+    public partial class Class
     {
         public string Name { get; set; }
         public List<Property> Properties { get; set; }
