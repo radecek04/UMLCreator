@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace UMLCreator
 {
-    public partial class Class : Form
+    public partial class EditForm : Form
     {
         private int _lastIndex = -1;
         private bool _IsProperty = false;
@@ -21,7 +21,7 @@ namespace UMLCreator
         private BindingList<Property> _properties;
         private BindingList<Method> _methods;
         private LayerManager _layers;
-        public Class(Class current, LayerManager layers)
+        public EditForm(Class current, LayerManager layers)
         {
             InitializeComponent();
 

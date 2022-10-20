@@ -1,6 +1,6 @@
 ﻿namespace UMLCreator
 {
-    partial class Class
+    partial class EditForm
     {
         /// <summary>
         /// Required designer variable.

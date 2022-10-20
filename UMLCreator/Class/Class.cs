@@ -1,16 +1,12 @@
-﻿using Accessibility;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Windows.Forms.LinkLabel;
 
 namespace UMLCreator
 {
-    public partial class Class
+    public class Class
     {
         public string Name { get; set; }
         public List<Property> Properties { get; set; }
@@ -93,14 +89,14 @@ namespace UMLCreator
         }
 
         public void Adjust()
-        { 
+        {
             // Keeps track of widest text in diagram node
             SizeF maxTextWidth = _graphics.MeasureString(Name, IsAbstract ? _settings.ABSTRACT_FONT : _settings.NAME_FONT);
 
             // Keeps track of total calculated height of the diagram cell
             float totalHeight = _settings.CLASSNAME_HEIGHT + _settings.LINESPACING;
 
-            foreach(Property property in Properties)
+            foreach (Property property in Properties)
             {
                 SizeF current = _graphics.MeasureString(property.ToString(), _settings.FONT);
                 totalHeight += (int)current.Height + _settings.LINESPACING;
@@ -125,7 +121,7 @@ namespace UMLCreator
                 Background = new Rectangle(Background.X, Background.Y, MinWidth, Background.Height);
 
             // If text overflows through current height extend height to total calculated height
-            if(MinHeight >= Background.Height)
+            if (MinHeight >= Background.Height)
                 Background = new Rectangle(Background.X, Background.Y, Background.Width, MinHeight);
 
             _anchors[0].X = Background.X + Background.Width / 2;
@@ -176,7 +172,7 @@ namespace UMLCreator
 
 
             // Adjust to picturebox
-            if(x + finalWidth > p.Width)
+            if (x + finalWidth > p.Width)
             {
                 x = Background.X;
                 finalWidth = p.Width - x;
@@ -193,37 +189,18 @@ namespace UMLCreator
 
         public void DrawAnchors(Graphics g)
         {
-            foreach(var anchor in _anchors)
-            {
-                anchor.Draw(g);
-            }
-        }
-
-        public void DrawPoints(Graphics g)
-        {
             foreach (var anchor in _anchors)
             {
-                anchor.DrawPoint(g);
+                anchor.Draw(g);
             }
         }
 
         public ClassAnchor? CheckAnchorCollison(int x, int y)
         {
             ClassAnchor? output = null;
-            foreach(var anchor in _anchors)
-            {
-                if(anchor.CheckCollision(x,y))
-                    output = anchor;
-            }
-            return output;
-        }
-
-        public ClassAnchor? CheckPointCollison(int x, int y)
-        {
-            ClassAnchor? output = null;
             foreach (var anchor in _anchors)
             {
-                if (anchor.CheckPointCollision(x, y))
+                if (anchor.CheckCollision(x, y))
                     output = anchor;
             }
             return output;

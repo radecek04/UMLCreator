@@ -14,12 +14,12 @@ namespace UMLCreator
     public partial class Relationship : Form
     {
         public Relationships.Relationship relationship;
-        private ClassAnchor _startAnchor;
-        public Relationship(ClassAnchor c)
+        private Class _start;
+        public Relationship(Class c)
         {
             InitializeComponent();
 
-            _startAnchor = c;
+            _start = c;
 
             comboBox1.Items.Add("Association");
             comboBox1.Items.Add("Inheritance");
@@ -36,22 +36,22 @@ namespace UMLCreator
             switch (comboBox1.SelectedItem as string)
             {
                 case "Association":
-                    relationship = new AssociationRelationship(_startAnchor);
+                    relationship = new AssociationRelationship(_start);
                     break;
                 case "Inheritance":
-                    relationship = new InheritanceRelationship(_startAnchor);
+                    relationship = new InheritanceRelationship(_start);
                     break;
                 case "Implementation":
-                    relationship = new ImplementationRelationship(_startAnchor);
+                    relationship = new ImplementationRelationship(_start);
                     break;
                 case "Dependency":
-                    relationship = new DependencyRelationship(_startAnchor);
+                    relationship = new DependencyRelationship(_start);
                     break;
                 case "Aggregation":
-                    relationship = new AggregationRelationship(_startAnchor);
+                    relationship = new AggregationRelationship(_start);
                     break;
                 case "Composition":
-                    relationship = new CompositionRelationship(_startAnchor);
+                    relationship = new CompositionRelationship(_start);
                     break;
             }
 

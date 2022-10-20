@@ -8,7 +8,7 @@ namespace UMLCreator.Relationships
 {
     public class AggregationRelationship : Relationship
     {
-        public AggregationRelationship(ClassAnchor start) : base(start)
+        public AggregationRelationship(Class start) : base(start)
         {
             LinePen = _settings.LINE_PEN;
         }
@@ -16,39 +16,39 @@ namespace UMLCreator.Relationships
         protected override void DrawLineEnd(Graphics g)
         {
             Pen pen = new Pen(LinePen.Color, 2);
-            Point top = new Point(EndAnchor.X, EndAnchor.Y);
+            Point top = new Point(End.X, End.Y);
             Point bottom;
             Point side1;
             Point side2;
-            if (EndAnchor.XCoeficient == -1)
+            if (Direction == Direction.Left)
             {
-                side1 = new Point(EndAnchor.X - _settings.LINE_ENDING_WIDTH, EndAnchor.Y - _settings.LINE_ENDING_LENGTH);
-                side2 = new Point(EndAnchor.X - _settings.LINE_ENDING_WIDTH, EndAnchor.Y + _settings.LINE_ENDING_LENGTH);
-                bottom = new Point(EndAnchor.X - _settings.LINE_ENDING_WIDTH * 2, EndAnchor.Y);
+                side1 = new Point(End.X - _settings.LINE_ENDING_WIDTH, End.Y - _settings.LINE_ENDING_LENGTH);
+                side2 = new Point(End.X - _settings.LINE_ENDING_WIDTH, End.Y + _settings.LINE_ENDING_LENGTH);
+                bottom = new Point(End.X - _settings.LINE_ENDING_WIDTH * 2, End.Y);
                 g.FillPolygon(Brushes.White, new Point[] { top, side1, bottom, side2 });
                 g.DrawPolygon(pen, new Point[] { top, side1, bottom, side2 });
             }
-            else if (EndAnchor.XCoeficient == 1)
+            else if (Direction == Direction.Right)
             {
-                side1 = new Point(EndAnchor.X + _settings.LINE_ENDING_WIDTH, EndAnchor.Y - _settings.LINE_ENDING_LENGTH);
-                side2 = new Point(EndAnchor.X + _settings.LINE_ENDING_WIDTH, EndAnchor.Y + _settings.LINE_ENDING_LENGTH);
-                bottom = new Point(EndAnchor.X + _settings.LINE_ENDING_WIDTH * 2, EndAnchor.Y);
+                side1 = new Point(End.X + _settings.LINE_ENDING_WIDTH, End.Y - _settings.LINE_ENDING_LENGTH);
+                side2 = new Point(End.X + _settings.LINE_ENDING_WIDTH, End.Y + _settings.LINE_ENDING_LENGTH);
+                bottom = new Point(End.X + _settings.LINE_ENDING_WIDTH * 2, End.Y);
                 g.FillPolygon(Brushes.White, new Point[] { top, side1, bottom, side2 });
                 g.DrawPolygon(pen, new Point[] { top, side1, bottom, side2 });
             }
-            else if (EndAnchor.YCoeficient == -1)
+            else if (Direction == Direction.Up)
             {
-                side1 = new Point(EndAnchor.X - _settings.LINE_ENDING_LENGTH, EndAnchor.Y - _settings.LINE_ENDING_WIDTH);
-                side2 = new Point(EndAnchor.X + _settings.LINE_ENDING_LENGTH, EndAnchor.Y - _settings.LINE_ENDING_WIDTH);
-                bottom = new Point(EndAnchor.X, EndAnchor.Y - _settings.LINE_ENDING_WIDTH * 2);
+                side1 = new Point(End.X - _settings.LINE_ENDING_LENGTH, End.Y - _settings.LINE_ENDING_WIDTH);
+                side2 = new Point(End.X + _settings.LINE_ENDING_LENGTH, End.Y - _settings.LINE_ENDING_WIDTH);
+                bottom = new Point(End.X, End.Y - _settings.LINE_ENDING_WIDTH * 2);
                 g.FillPolygon(Brushes.White, new Point[] { top, side1, bottom, side2 });
                 g.DrawPolygon(pen, new Point[] { top, side1, bottom, side2 });
             }
-            else if (EndAnchor.YCoeficient == 1)
+            else if (Direction == Direction.Down)
             {
-                side1 = new Point(EndAnchor.X - _settings.LINE_ENDING_LENGTH, EndAnchor.Y + _settings.LINE_ENDING_WIDTH);
-                side2 = new Point(EndAnchor.X + _settings.LINE_ENDING_LENGTH, EndAnchor.Y + _settings.LINE_ENDING_WIDTH);
-                bottom = new Point(EndAnchor.X, EndAnchor.Y + _settings.LINE_ENDING_WIDTH * 2);
+                side1 = new Point(End.X - _settings.LINE_ENDING_LENGTH, End.Y + _settings.LINE_ENDING_WIDTH);
+                side2 = new Point(End.X + _settings.LINE_ENDING_LENGTH, End.Y + _settings.LINE_ENDING_WIDTH);
+                bottom = new Point(End.X, End.Y + _settings.LINE_ENDING_WIDTH * 2);
                 g.FillPolygon(Brushes.White, new Point[] { top, side1, bottom, side2 });
                 g.DrawPolygon(pen, new Point[] { top, side1, bottom, side2 });
             }

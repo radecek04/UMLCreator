@@ -10,7 +10,6 @@ namespace UMLCreator
         private Class _selected = null;
         private Relationships.Relationship _selectedRelationship = null;
         private ClassAnchor _selectedAnchor = null;
-        private ClassAnchor _connectedAnchor = null;
         private bool _drag = false;
         private bool _resize = false;
         private int _xOffset = 0;
@@ -125,7 +124,7 @@ namespace UMLCreator
             }
             else
             {
-                if(_selectedRelationship != null)
+                if (_selectedRelationship != null)
                 {
                     _selectedRelationship.LinePen = _selectedRelationship.LinePen == _settings.LINE_PEN_SELECTED ? _settings.LINE_PEN : _settings.LINE_PEN_DASHED;
                     _selectedRelationship = null;
@@ -139,22 +138,22 @@ namespace UMLCreator
                         _selectedRelationship = line;
                         _selectedRelationship.LinePen = _selectedRelationship.LinePen == _settings.LINE_PEN ? _settings.LINE_PEN_SELECTED : _settings.LINE_PEN_DASHED_SELECTED;
 
-                        if(e.Clicks == 2)
+                        if (e.Clicks == 2)
                         {
-                            Relationship frm = new Relationship(_selectedRelationship.StartAnchor);
-                            if(frm.ShowDialog() == DialogResult.OK)
+                            Relationship frm = new Relationship(_selectedRelationship.StartClass);
+                            if (frm.ShowDialog() == DialogResult.OK)
                             {
-                                frm.relationship.EndAnchor = _selectedRelationship.EndAnchor;
+                                frm.relationship.EndClass = _selectedRelationship.EndClass;
                                 _selectedRelationship = frm.relationship;
-                                editIndex = index; 
-                            }     
+                                editIndex = index;
+                            }
                         }
 
                         break;
                     }
                     index++;
                 }
-                if(editIndex >= 0)
+                if (editIndex >= 0)
                 {
                     _relationships[editIndex] = _selectedRelationship;
                     _selectedRelationship = null;
@@ -173,19 +172,38 @@ namespace UMLCreator
             _xStart = false;
             _yStart = false;
 
-            if(_connectedAnchor != null)
+            if(_selectedAnchor != null)
             {
-                Relationship frm = new Relationship(_selectedAnchor);
-
-                if (frm.ShowDialog() == DialogResult.OK)
+                Class current = null;
+                foreach (Class c in _layers)
                 {
-                    Relationships.Relationship relationship = frm.relationship;
-                    relationship.EndAnchor = _connectedAnchor;
-                    _relationships.Add(relationship);
+                    // Check collision
+                    if (e.X < c.Background.X || e.X >= c.Background.X + c.Background.Width)
+                        continue;
+                    else if (e.Y < c.Background.Y || e.Y >= c.Background.Y + c.Background.Height)
+                        continue;
+
+                    current = c;
+                }
+
+                if(!_relationships.Any(x => x.EndClass == current && x.StartClass == _selected))
+                {
+                    Relationship frm = new Relationship(_selected);
+
+                    if (frm.ShowDialog() == DialogResult.OK)
+                    {
+                        Relationships.Relationship relationship = frm.relationship;
+                        relationship.EndClass = current;
+                        _relationships.Add(relationship);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Those classes cant be connected.", "Warning");
                 }
             }
+
             _selectedAnchor = null;
-            _connectedAnchor = null;
 
             this.Refresh();
         }
@@ -195,18 +213,6 @@ namespace UMLCreator
             if(_selectedAnchor != null)
             {
                 _mousePos = new Point(e.X, e.Y);
-
-                _connectedAnchor = null;
-
-                foreach(Class c in _layers)
-                {
-                    ClassAnchor anchor = c.CheckPointCollison(_mousePos.X, _mousePos.Y);
-                    if(anchor != null)
-                    {
-                        _mousePos = new Point(anchor.X, anchor.Y);
-                        _connectedAnchor = anchor;
-                    }
-                }
 
                 this.pictureBox1.Refresh();
                 return;
@@ -285,8 +291,6 @@ namespace UMLCreator
             foreach(Class c in _layers)
             {
                 c.Draw(g, c == _selected);
-                if (_selectedAnchor != null && c != _selected)
-                    c.DrawPoints(g);
             }
             if (_selected != null && _selectedAnchor == null)
                 _selected.DrawAnchors(g);
@@ -300,7 +304,7 @@ namespace UMLCreator
         {
             // Create empty class
             Class c = new Class("", false, pictureBox1.CreateGraphics());
-            Class ef = new Class(c, _layers);
+            EditForm ef = new EditForm(c, _layers);
             if(ef.ShowDialog() == DialogResult.OK)
             {
                 // Add to layer manager
@@ -317,7 +321,7 @@ namespace UMLCreator
             {
                 // Remove class from view
                 _layers.Remove(_selected);
-                _relationships.RemoveAll(x => x.StartAnchor.Parent == _selected || x.EndAnchor.Parent == _selected);
+                _relationships.RemoveAll(x => x.StartClass == _selected || x.EndClass == _selected);
                 _selected = null;
             }
             else if (_selectedRelationship != null)
@@ -337,7 +341,7 @@ namespace UMLCreator
         private void EditClass()
         {
             // Show new dialog with edit
-            Class ef = new Class(_selected, _layers);
+            EditForm ef = new EditForm(_selected, _layers);
             if (ef.ShowDialog() == DialogResult.OK)
             {
                 _selected.Adjust();

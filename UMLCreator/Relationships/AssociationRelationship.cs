@@ -8,7 +8,7 @@ namespace UMLCreator.Relationships
 {
     public class AssociationRelationship : Relationship
     {
-        public AssociationRelationship(ClassAnchor start) : base(start)
+        public AssociationRelationship(Class start) : base(start)
         {
             LinePen = _settings.LINE_PEN;
         }
@@ -16,25 +16,25 @@ namespace UMLCreator.Relationships
         protected override void DrawLineEnd(Graphics g)
         {
             Pen pen = new Pen(LinePen.Color, 2);
-            if(EndAnchor.XCoeficient == -1)
+            if (Direction == Direction.Left)
             {
-                g.DrawLine(pen, EndAnchor.X, EndAnchor.Y, EndAnchor.X - _settings.LINE_ENDING_WIDTH, EndAnchor.Y - _settings.LINE_ENDING_LENGTH);
-                g.DrawLine(pen, EndAnchor.X, EndAnchor.Y, EndAnchor.X - _settings.LINE_ENDING_WIDTH, EndAnchor.Y + _settings.LINE_ENDING_LENGTH);
+                g.DrawLine(pen, End.X, End.Y, End.X - _settings.LINE_ENDING_WIDTH, End.Y - _settings.LINE_ENDING_LENGTH);
+                g.DrawLine(pen, End.X, End.Y, End.X - _settings.LINE_ENDING_WIDTH, End.Y + _settings.LINE_ENDING_LENGTH);
             }
-            else if(EndAnchor.XCoeficient == 1)
+            else if (Direction == Direction.Right)
             {
-                g.DrawLine(pen, EndAnchor.X, EndAnchor.Y, EndAnchor.X + _settings.LINE_ENDING_WIDTH, EndAnchor.Y - _settings.LINE_ENDING_LENGTH);
-                g.DrawLine(pen, EndAnchor.X, EndAnchor.Y, EndAnchor.X + _settings.LINE_ENDING_WIDTH, EndAnchor.Y + _settings.LINE_ENDING_LENGTH);
+                g.DrawLine(pen, End.X, End.Y, End.X + _settings.LINE_ENDING_WIDTH, End.Y - _settings.LINE_ENDING_LENGTH);
+                g.DrawLine(pen, End.X, End.Y, End.X + _settings.LINE_ENDING_WIDTH, End.Y + _settings.LINE_ENDING_LENGTH);
             }
-            else if (EndAnchor.YCoeficient == -1)
+            else if (Direction == Direction.Up)
             {
-                g.DrawLine(pen, EndAnchor.X, EndAnchor.Y, EndAnchor.X - _settings.LINE_ENDING_LENGTH, EndAnchor.Y - _settings.LINE_ENDING_WIDTH);
-                g.DrawLine(pen, EndAnchor.X, EndAnchor.Y, EndAnchor.X + _settings.LINE_ENDING_LENGTH, EndAnchor.Y - _settings.LINE_ENDING_WIDTH);
+                g.DrawLine(pen, End.X, End.Y, End.X - _settings.LINE_ENDING_LENGTH, End.Y - _settings.LINE_ENDING_WIDTH);
+                g.DrawLine(pen, End.X, End.Y, End.X + _settings.LINE_ENDING_LENGTH, End.Y - _settings.LINE_ENDING_WIDTH);
             }
-            else if (EndAnchor.YCoeficient == 1)
+            else if (Direction == Direction.Down)
             {
-                g.DrawLine(pen, EndAnchor.X, EndAnchor.Y, EndAnchor.X - _settings.LINE_ENDING_LENGTH, EndAnchor.Y + _settings.LINE_ENDING_WIDTH);
-                g.DrawLine(pen, EndAnchor.X, EndAnchor.Y, EndAnchor.X + _settings.LINE_ENDING_LENGTH, EndAnchor.Y + _settings.LINE_ENDING_WIDTH);
+                g.DrawLine(pen, End.X, End.Y, End.X - _settings.LINE_ENDING_LENGTH, End.Y + _settings.LINE_ENDING_WIDTH);
+                g.DrawLine(pen, End.X, End.Y, End.X + _settings.LINE_ENDING_LENGTH, End.Y + _settings.LINE_ENDING_WIDTH);
             }
         }
     }
