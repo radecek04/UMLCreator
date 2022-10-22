@@ -17,6 +17,7 @@ namespace UMLCreator
         {
             _first = null;
             _last = null;
+            Count = 0;
         }
 
         public void Add(Class c)
@@ -26,6 +27,7 @@ namespace UMLCreator
             {
                 _first = node;
                 _last = node;
+                Count++;
                 return;
             }
 
@@ -40,7 +42,8 @@ namespace UMLCreator
             LayerNode current = _first;
             while (current != null)
             {
-                yield return current.Value;
+                if(current.Value != null)
+                    yield return current.Value;
                 current = current.Next;
             }
         }
@@ -90,6 +93,40 @@ namespace UMLCreator
             }
 
             return found;
+        }
+
+        public void Clear()
+        {
+            _first = null;
+            _last = null;
+            Count = 0;
+        }
+
+        public void LoadFromList(List<Class> classes)
+        {
+            Clear();
+            foreach(Class c in classes)
+            {
+                Add(c);
+            }
+        }
+
+        public List<Class> ToList()
+        {
+            if(Count == 0)
+            {
+                return new List<Class>();
+            }
+
+            List<Class> classes = new List<Class>();
+            LayerNode? current = _first;
+            while(current != null)
+            {
+                classes.Add(current.Value);
+                current = current.Next;
+            }
+
+            return classes;
         }
     }
 

@@ -19,9 +19,8 @@ namespace UMLCreator
 
         private List<ClassAnchor> _anchors;
         private ClassSettings _settings;
-        private Graphics _graphics;
 
-        public Class(string name, bool isAbstract, Graphics graphics)
+        public Class(string name, bool isAbstract)
         {
             this.Name = name;
             this.Properties = new List<Property>();
@@ -29,7 +28,6 @@ namespace UMLCreator
             this.IsAbstract = isAbstract;
             this._settings = ClassSettings.Instance;
             this.Background = _settings.BACKGROUND;
-            this._graphics = graphics;
             this._anchors = new List<ClassAnchor>();
 
             _anchors.Add(new ClassAnchor(this, Background.X + Background.Width / 2,
@@ -91,14 +89,14 @@ namespace UMLCreator
         public void Adjust()
         {
             // Keeps track of widest text in diagram node
-            SizeF maxTextWidth = _graphics.MeasureString(Name, IsAbstract ? _settings.ABSTRACT_FONT : _settings.NAME_FONT);
+            SizeF maxTextWidth = _settings.GRAPHICS.MeasureString(Name, IsAbstract ? _settings.ABSTRACT_FONT : _settings.NAME_FONT);
 
             // Keeps track of total calculated height of the diagram cell
             float totalHeight = _settings.CLASSNAME_HEIGHT + _settings.LINESPACING;
 
             foreach (Property property in Properties)
             {
-                SizeF current = _graphics.MeasureString(property.ToString(), _settings.FONT);
+                SizeF current = _settings.GRAPHICS.MeasureString(property.ToString(), _settings.FONT);
                 totalHeight += (int)current.Height + _settings.LINESPACING;
                 if (maxTextWidth.Width < current.Width)
                     maxTextWidth = current;
@@ -106,7 +104,7 @@ namespace UMLCreator
 
             foreach (Method method in Methods)
             {
-                SizeF current = _graphics.MeasureString(method.ToString(), _settings.FONT);
+                SizeF current = _settings.GRAPHICS.MeasureString(method.ToString(), _settings.FONT);
                 totalHeight += (int)current.Height + _settings.LINESPACING;
                 if (maxTextWidth.Width < current.Width)
                     maxTextWidth = current;

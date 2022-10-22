@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using UMLCreator.Export;
 using UMLCreator.Relationships;
 
 namespace UMLCreator
@@ -25,7 +26,7 @@ namespace UMLCreator
             InitializeComponent();
 
             // Tester Classes
-            Class c = new Class("Class Test", false, pictureBox1.CreateGraphics());
+            Class c = new Class("Class Test", false);
             c.Properties.Add(new Property(AccessModifier.Public, "int", "Property"));
             c.Properties.Add(new Property(AccessModifier.Public, "int", "Property"));
             c.Properties.Add(new Property(AccessModifier.Public, "int", "Property"));
@@ -34,7 +35,7 @@ namespace UMLCreator
             c.Methods.Add(new Method(AccessModifier.Public, "int", "Property"));
             c.Adjust();
             _layers.Add(c);
-            c = new Class("Class Test 2", false, pictureBox1.CreateGraphics());
+            c = new Class("Class Test 2", false);
             c.Properties.Add(new Property(AccessModifier.Public, "int", "Property"));
             c.Properties.Add(new Property(AccessModifier.Public, "int", "Property"));
             c.Properties.Add(new Property(AccessModifier.Public, "int", "Property"));
@@ -186,6 +187,13 @@ namespace UMLCreator
                     current = c;
                 }
 
+                if(current == null)
+                {
+                    _selectedAnchor = null;
+                    this.pictureBox1.Refresh();
+                    return;
+                }
+
                 if(!_relationships.Any(x => x.EndClass == current && x.StartClass == _selected))
                 {
                     Relationship frm = new Relationship(_selected);
@@ -303,7 +311,7 @@ namespace UMLCreator
         private void btn_Add_Click(object sender, EventArgs e)
         {
             // Create empty class
-            Class c = new Class("", false, pictureBox1.CreateGraphics());
+            Class c = new Class("", false);
             EditForm ef = new EditForm(c, _layers);
             if(ef.ShowDialog() == DialogResult.OK)
             {
@@ -346,6 +354,36 @@ namespace UMLCreator
             {
                 _selected.Adjust();
             }
+        }
+
+        private void btn_Export_Click(object sender, EventArgs e)
+        {
+            _selected = null;
+            if (_selectedRelationship != null)
+                _selectedRelationship.LinePen = _selectedRelationship.LinePen == _settings.LINE_PEN_DASHED_SELECTED ? _settings.LINE_PEN_DASHED : _settings.LINE_PEN;
+            _selectedRelationship = null;
+
+            //JsonService service = new JsonService(_layers, _relationships);
+            //service.Export();
+
+            //PngExport png = new PngExport(_layers, _relationships, pictureBox1);
+            //png.Export();
+
+            CodeExport code = new CodeExport(_layers, _relationships, "Diagram");
+            code.Export();
+        }
+
+        private void btn_Import_Click(object sender, EventArgs e)
+        {
+            _selected = null;
+            if (_selectedRelationship != null)
+                _selectedRelationship.LinePen = _selectedRelationship.LinePen == _settings.LINE_PEN_DASHED_SELECTED ? _settings.LINE_PEN_DASHED : _settings.LINE_PEN;
+            _selectedRelationship = null;
+
+            JsonService service = new JsonService(_layers, _relationships);
+            service.Import();
+
+            this.pictureBox1.Refresh();
         }
     }
 }

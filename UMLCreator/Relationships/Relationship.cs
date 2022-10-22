@@ -11,10 +11,11 @@ namespace UMLCreator.Relationships
     {
         public Class StartClass { get; set; }
         public Class EndClass{ get; set; }
-        public Point Start { get; set; }
-        public Point End { get; set; }
-        public Point BendingPoint { get; set; }
-        public Pen LinePen { get; set; }
+        protected Point Start;
+        protected Point End;
+        protected Point BendingPoint;
+        [NonSerialized]
+        public Pen LinePen;
         public Direction Direction { get; set; }
 
         protected ClassSettings _settings = ClassSettings.Instance;
