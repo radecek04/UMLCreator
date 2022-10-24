@@ -10,7 +10,9 @@ namespace UMLCreator.Relationships
     public class Relationship
     {
         public Class StartClass { get; set; }
-        public Class EndClass{ get; set; }
+        public Class EndClass { get; set; }
+        public string StartCardinal { get; set; }
+        public string EndCardinal { get; set; }
         protected Point Start;
         protected Point End;
         protected Point BendingPoint;
@@ -23,10 +25,16 @@ namespace UMLCreator.Relationships
         public Relationship(Class start)
         {
             StartClass = start;
+
+            StartCardinal = "";
+            EndCardinal = "";
         }
 
         public void Draw(Graphics g)
         {
+            if (StartClass.Background.IntersectsWith(EndClass.Background))
+                return;
+
             Rectangle smallX = StartClass.Background.Width < EndClass.Background.Width ? StartClass.Background : EndClass.Background;
             Rectangle smallY = StartClass.Background.Height < EndClass.Background.Height ? StartClass.Background : EndClass.Background;
             Rectangle largeX = smallX == StartClass.Background ? EndClass.Background : StartClass.Background;
@@ -135,14 +143,20 @@ namespace UMLCreator.Relationships
             {
                 if (StartClass.Background.X < EndClass.Background.X)
                 {
-                    Start = new Point(StartClass.Background.X + StartClass.Background.Width / 2, StartClass.Background.Y);
+                    if(StartClass.Background.Y + StartClass.Background.Height > EndClass.Background.Y)
+                        Start = new Point(StartClass.Background.X + StartClass.Background.Width / 2, StartClass.Background.Y);
+                    else
+                        Start = new Point(StartClass.Background.X + StartClass.Background.Width / 2, StartClass.Background.Y + StartClass.Background.Height);
                     End = new Point(EndClass.Background.X, EndClass.Background.Y + EndClass.Background.Height / 2);
+                    
                     Direction = Direction.Left;
-
                 }
                 else
                 {
-                    Start = new Point(StartClass.Background.X + StartClass.Background.Width / 2, StartClass.Background.Y);
+                    if (StartClass.Background.Y + StartClass.Background.Height > EndClass.Background.Y)
+                        Start = new Point(StartClass.Background.X + StartClass.Background.Width / 2, StartClass.Background.Y);
+                    else
+                        Start = new Point(StartClass.Background.X + StartClass.Background.Width / 2, StartClass.Background.Y + StartClass.Background.Height);
                     End = new Point(EndClass.Background.X + EndClass.Background.Width, EndClass.Background.Y + EndClass.Background.Height / 2);
                     Direction = Direction.Right;
                 }
@@ -151,6 +165,8 @@ namespace UMLCreator.Relationships
                 g.DrawLine(LinePen, End, BendingPoint);
             }
 
+            DrawCandinarls(g);
+            
             DrawLineEnd(g);
         }
 
@@ -195,6 +211,39 @@ namespace UMLCreator.Relationships
 
             return false;
 
+        }
+
+        private void DrawCandinarls(Graphics g)
+        {
+            SizeF start = g.MeasureString(StartCardinal, _settings.CARDINAL_FONT);
+            SizeF end = g.MeasureString(EndCardinal, _settings.CARDINAL_FONT);
+
+            if(Direction == Direction.Left)
+            {
+                if(Start.Y < End.Y)
+                    g.DrawString(StartCardinal, _settings.CARDINAL_FONT, LinePen.Brush, Start.X + _settings.CARDINAL_MARGIN, Start.Y + _settings.CARDINAL_MARGIN);
+                else
+                    g.DrawString(StartCardinal, _settings.CARDINAL_FONT, LinePen.Brush, Start.X + _settings.CARDINAL_MARGIN, Start.Y - _settings.CARDINAL_MARGIN - start.Height);
+                g.DrawString(EndCardinal, _settings.CARDINAL_FONT, LinePen.Brush, End.X - _settings.CARDINAL_MARGIN - end.Width, End.Y - _settings.CARDINAL_MARGIN - end.Height);
+            }
+            else if (Direction == Direction.Right)
+            {
+                if (Start.Y < End.Y)
+                    g.DrawString(StartCardinal, _settings.CARDINAL_FONT, LinePen.Brush, Start.X - _settings.CARDINAL_MARGIN - start.Width, Start.Y + _settings.CARDINAL_MARGIN);
+                else
+                    g.DrawString(StartCardinal, _settings.CARDINAL_FONT, LinePen.Brush, Start.X - _settings.CARDINAL_MARGIN - start.Width, Start.Y - _settings.CARDINAL_MARGIN - start.Height);
+                g.DrawString(EndCardinal, _settings.CARDINAL_FONT, LinePen.Brush, End.X + _settings.CARDINAL_MARGIN, End.Y - _settings.CARDINAL_MARGIN - end.Height);
+            }
+            else if (Direction == Direction.Up)
+            {
+                g.DrawString(StartCardinal, _settings.CARDINAL_FONT, LinePen.Brush, Start.X + _settings.CARDINAL_MARGIN, Start.Y + _settings.CARDINAL_MARGIN);
+                g.DrawString(EndCardinal, _settings.CARDINAL_FONT, LinePen.Brush, End.X + _settings.CARDINAL_MARGIN, End.Y - _settings.CARDINAL_MARGIN - end.Height);
+            }
+            else if (Direction == Direction.Down)
+            {
+                g.DrawString(StartCardinal, _settings.CARDINAL_FONT, LinePen.Brush, Start.X + _settings.CARDINAL_MARGIN, Start.Y - _settings.CARDINAL_MARGIN - end.Height);
+                g.DrawString(EndCardinal, _settings.CARDINAL_FONT, LinePen.Brush, End.X + _settings.CARDINAL_MARGIN, End.Y + _settings.CARDINAL_MARGIN);
+            }
         }
 
         protected virtual void DrawLineEnd(Graphics g)

@@ -26,11 +26,15 @@ namespace UMLCreator
         #endregion
         #region fonts
         public readonly Font FONT = new Font("Cascadia Code", 8);
+        public readonly Font STEREOTYPE_FONT = new Font("Cascadia Code", 10);
         public readonly Font NAME_FONT = new Font("Cascadia Code", 12);
         public readonly Font ABSTRACT_FONT = new Font("Cascadia Code", 12, FontStyle.Italic);
+        public readonly Font CARDINAL_FONT = new Font("Cascadia Code", 8);
         #endregion
         #region numeric data
         public readonly float CLASSNAME_HEIGHT = 28;
+        public readonly float CLASSNAME_HEIGHT_STEREOTYPE = 38;
+        public readonly float STEREOTYPE_MARGIN = 2;
         public readonly int RESIZE_BORDER = 7;
         public readonly int NAME_MARGIN = 5;
         public readonly int LINESPACING = 2;
@@ -40,6 +44,7 @@ namespace UMLCreator
         public readonly int LINE_ENDING_LENGTH = 10;
         public readonly int LINE_ENDING_WIDTH = 20;
         public readonly int LINE_MARGIN = 5;
+        public readonly int CARDINAL_MARGIN = 10;
         #endregion
         public Graphics GRAPHICS = new PictureBox().CreateGraphics();
 

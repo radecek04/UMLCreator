@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -15,11 +16,9 @@ namespace UMLCreator
     {
         public Relationships.Relationship relationship;
         private Class _start;
-        public Relationship(Class c)
+        public Relationship(Class c, Relationships.Relationship relation = null)
         {
             InitializeComponent();
-
-            _start = c;
 
             comboBox1.Items.Add("Association");
             comboBox1.Items.Add("Inheritance");
@@ -27,8 +26,19 @@ namespace UMLCreator
             comboBox1.Items.Add("Dependency");
             comboBox1.Items.Add("Aggregation");
             comboBox1.Items.Add("Composition");
-
             comboBox1.SelectedIndex = 0;
+
+            _start = c;
+
+            if (relation == null)
+                return;
+
+            relationship = relation;
+
+            textBox_StartCardinal.Text = relationship.StartCardinal;
+            textBox_EndCardinal.Text = relationship.EndCardinal;
+            comboBox1.SelectedItem = relation.ToString().Split('.').Last().Split("R")[0];
+
         }
 
         private void btn_Ok_Click(object sender, EventArgs e)
@@ -54,6 +64,9 @@ namespace UMLCreator
                     relationship = new CompositionRelationship(_start);
                     break;
             }
+
+            this.relationship.StartCardinal = textBox_StartCardinal.Text;
+            this.relationship.EndCardinal = textBox_EndCardinal.Text;
 
             this.DialogResult = DialogResult.OK;
             this.Close();

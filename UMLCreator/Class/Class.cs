@@ -11,7 +11,7 @@ namespace UMLCreator
         public string Name { get; set; }
         public List<Property> Properties { get; set; }
         public List<Method> Methods { get; set; }
-        public bool IsAbstract { get; set; }
+        public ObjectType Type { get; set; }
         public Rectangle Background { get; set; }
 
         public int MinWidth { get; private set; }
@@ -20,12 +20,12 @@ namespace UMLCreator
         private List<ClassAnchor> _anchors;
         private ClassSettings _settings;
 
-        public Class(string name, bool isAbstract)
+        public Class(string name)
         {
             this.Name = name;
             this.Properties = new List<Property>();
             this.Methods = new List<Method>();
-            this.IsAbstract = isAbstract;
+            this.Type = ObjectType.None;
             this._settings = ClassSettings.Instance;
             this.Background = _settings.BACKGROUND;
             this._anchors = new List<ClassAnchor>();
@@ -49,12 +49,37 @@ namespace UMLCreator
             g.DrawRectangle(_settings.BORDER_PEN, Background);
 
             // Draw in name of the class
-            SizeF className = g.MeasureString(Name, IsAbstract ? _settings.ABSTRACT_FONT : _settings.NAME_FONT);
-            g.DrawString(Name, IsAbstract ? _settings.ABSTRACT_FONT : _settings.NAME_FONT, Brushes.Black, Background.X + Background.Width / 2 - className.Width / 2, Background.Y + _settings.CLASSNAME_HEIGHT / 2 - className.Height / 2);
-            g.DrawLine(_settings.BORDER_PEN, Background.X, Background.Y + _settings.CLASSNAME_HEIGHT, Background.X + Background.Width, Background.Y + _settings.CLASSNAME_HEIGHT);
+            SizeF className;
+            float lineY;
+            if(Type == ObjectType.Abstract)
+                className = g.MeasureString(Name, _settings.ABSTRACT_FONT);
+            else
+                className = g.MeasureString(Name, _settings.NAME_FONT);
+
+            if(Type == ObjectType.Static || Type == ObjectType.Interface)
+            {
+                string stereotype = $"<<{Enum.GetName<ObjectType>(Type).ToLower()}>>";
+                SizeF stereotypeSize = g.MeasureString(stereotype, _settings.STEREOTYPE_FONT);
+                g.DrawString(stereotype, _settings.STEREOTYPE_FONT, Brushes.Black, Background.X + Background.Width / 2 - stereotypeSize.Width / 2, Background.Y + _settings.CLASSNAME_HEIGHT_STEREOTYPE / 2 / 2 + _settings.STEREOTYPE_MARGIN - stereotypeSize.Height / 2);
+                g.DrawString(Name, _settings.NAME_FONT, Brushes.Black, Background.X + Background.Width / 2 - className.Width / 2, Background.Y + _settings.CLASSNAME_HEIGHT_STEREOTYPE / 2 + _settings.CLASSNAME_HEIGHT_STEREOTYPE / 2 / 2 - className.Height / 2);
+                g.DrawLine(_settings.BORDER_PEN, Background.X, Background.Y + _settings.CLASSNAME_HEIGHT_STEREOTYPE, Background.X + Background.Width, Background.Y + _settings.CLASSNAME_HEIGHT_STEREOTYPE);
+                lineY = Background.Y + _settings.CLASSNAME_HEIGHT_STEREOTYPE + _settings.LINESPACING;
+            }
+            else if(Type == ObjectType.Abstract)
+            {
+                g.DrawString(Name, _settings.ABSTRACT_FONT, Brushes.Black, Background.X + Background.Width / 2 - className.Width / 2, Background.Y + _settings.CLASSNAME_HEIGHT / 2 - className.Height / 2);
+                g.DrawLine(_settings.BORDER_PEN, Background.X, Background.Y + _settings.CLASSNAME_HEIGHT, Background.X + Background.Width, Background.Y + _settings.CLASSNAME_HEIGHT);
+                lineY = Background.Y + _settings.CLASSNAME_HEIGHT + _settings.LINESPACING;
+            }
+            else
+            {
+                g.DrawString(Name, _settings.NAME_FONT, Brushes.Black, Background.X + Background.Width / 2 - className.Width / 2, Background.Y + _settings.CLASSNAME_HEIGHT / 2 - className.Height / 2);
+                g.DrawLine(_settings.BORDER_PEN, Background.X, Background.Y + _settings.CLASSNAME_HEIGHT, Background.X + Background.Width, Background.Y + _settings.CLASSNAME_HEIGHT);
+                lineY = Background.Y + _settings.CLASSNAME_HEIGHT + _settings.LINESPACING;
+            }
+
 
             // Draw in all properties of the class
-            float lineY = Background.Y + _settings.CLASSNAME_HEIGHT + _settings.LINESPACING;
             foreach (Property property in Properties)
             {
                 g.DrawString(property.ToString(), _settings.FONT, Brushes.Black, _settings.NAME_MARGIN + Background.X, lineY);
@@ -89,11 +114,24 @@ namespace UMLCreator
         public void Adjust()
         {
             // Keeps track of widest text in diagram node
-            SizeF maxTextWidth = _settings.GRAPHICS.MeasureString(Name, IsAbstract ? _settings.ABSTRACT_FONT : _settings.NAME_FONT);
+            SizeF maxTextWidth;
+            float totalHeight;
+            if (Type == ObjectType.Abstract)
+                maxTextWidth = _settings.GRAPHICS.MeasureString(Name, _settings.ABSTRACT_FONT);
+            else
+                maxTextWidth = _settings.GRAPHICS.MeasureString(Name, _settings.NAME_FONT);
 
-            // Keeps track of total calculated height of the diagram cell
-            float totalHeight = _settings.CLASSNAME_HEIGHT + _settings.LINESPACING;
+            totalHeight = _settings.CLASSNAME_HEIGHT + _settings.LINESPACING;
 
+            if (Type == ObjectType.Interface || Type == ObjectType.Static)
+            {
+                string stereotype = $"<<{Enum.GetName<ObjectType>(Type).ToLower()}>>";
+                SizeF tmp = _settings.GRAPHICS.MeasureString(stereotype, _settings.STEREOTYPE_FONT);
+                if (tmp.Width > maxTextWidth.Width)
+                    maxTextWidth = tmp;
+                totalHeight = _settings.CLASSNAME_HEIGHT_STEREOTYPE + _settings.LINESPACING;
+            }
+            
             foreach (Property property in Properties)
             {
                 SizeF current = _settings.GRAPHICS.MeasureString(property.ToString(), _settings.FONT);
@@ -203,5 +241,13 @@ namespace UMLCreator
             }
             return output;
         }
+    }
+
+    public enum ObjectType
+    {
+        None,
+        Static,
+        Abstract,
+        Interface
     }
 }

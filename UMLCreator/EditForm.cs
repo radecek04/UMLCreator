@@ -30,9 +30,10 @@ namespace UMLCreator
 
             // Set all fields to class properties
             this.textBox_Class_Name.Text = _current.Name;
-            this.checkBox_Abstract.Checked = _current.IsAbstract;
 
             this.comboBox_Access.DataSource = Enum.GetValues(typeof(AccessModifier));
+            this.comboBox_Type.DataSource = Enum.GetValues(typeof(ObjectType));
+            this.comboBox_Type.SelectedItem = _current.Type;
             this._properties = new BindingList<Property>(_current.Properties.ToList());
             this._methods = new BindingList<Method>(_current.Methods.ToList());
 
@@ -294,8 +295,7 @@ namespace UMLCreator
 
             // Save all to class, return dialog result OK
             _current.Name = this.textBox_Class_Name.Text;
-            _current.IsAbstract = this.checkBox_Abstract.Checked;
-
+            _current.Type = Enum.Parse<ObjectType>(this.comboBox_Type.SelectedValue.ToString());
             _current.Properties = _properties.ToList();
             _current.Methods = _methods.ToList();
 

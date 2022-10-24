@@ -42,7 +42,6 @@
             this.label5 = new System.Windows.Forms.Label();
             this.textBox_Class_Name = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.checkBox_Abstract = new System.Windows.Forms.CheckBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.btn_Cancel = new System.Windows.Forms.Button();
             this.btn_Add_Property = new System.Windows.Forms.Button();
@@ -59,6 +58,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label_Arguments = new System.Windows.Forms.Label();
+            this.comboBox_Type = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -183,19 +183,9 @@
             this.label6.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.label6.Location = new System.Drawing.Point(332, 9);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(101, 30);
+            this.label6.Size = new System.Drawing.Size(65, 30);
             this.label6.TabIndex = 22;
-            this.label6.Text = "Abstract:";
-            // 
-            // checkBox_Abstract
-            // 
-            this.checkBox_Abstract.AutoSize = true;
-            this.checkBox_Abstract.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.checkBox_Abstract.Location = new System.Drawing.Point(448, 21);
-            this.checkBox_Abstract.Name = "checkBox_Abstract";
-            this.checkBox_Abstract.Size = new System.Drawing.Size(15, 14);
-            this.checkBox_Abstract.TabIndex = 23;
-            this.checkBox_Abstract.UseVisualStyleBackColor = true;
+            this.label6.Text = "Type:";
             // 
             // pictureBox1
             // 
@@ -351,13 +341,23 @@
             this.label_Arguments.TabIndex = 39;
             this.label_Arguments.Text = "Arguments";
             // 
-            // Class
+            // comboBox_Type
+            // 
+            this.comboBox_Type.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_Type.FormattingEnabled = true;
+            this.comboBox_Type.Location = new System.Drawing.Point(403, 16);
+            this.comboBox_Type.Name = "comboBox_Type";
+            this.comboBox_Type.Size = new System.Drawing.Size(121, 23);
+            this.comboBox_Type.TabIndex = 41;
+            // 
+            // EditForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.Disable;
             this.ClientSize = new System.Drawing.Size(800, 507);
             this.ControlBox = false;
+            this.Controls.Add(this.comboBox_Type);
             this.Controls.Add(this.label_Arguments);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -374,7 +374,6 @@
             this.Controls.Add(this.btn_Add_Property);
             this.Controls.Add(this.btn_Cancel);
             this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.checkBox_Abstract);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.textBox_Class_Name);
             this.Controls.Add(this.label5);
@@ -390,7 +389,7 @@
             this.MaximizeBox = false;
             this.MdiChildrenMinimizedAnchorBottom = false;
             this.MinimizeBox = false;
-            this.Name = "Class";
+            this.Name = "EditForm";
             this.Text = "Class";
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -411,7 +410,6 @@
         private Label label3;
         private ErrorProvider errorProvider;
         private Button btn_Save;
-        private CheckBox checkBox_Abstract;
         private Label label6;
         private TextBox textBox_Class_Name;
         private Label label5;
@@ -431,5 +429,6 @@
         private Label label_Arguments;
         private Label label2;
         private Label label1;
+        private ComboBox comboBox_Type;
     }
 }

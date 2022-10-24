@@ -49,19 +49,23 @@ namespace UMLCreator.Export
 
         }
 
-        public void Export()
+        public void Export(string path)
+        {
+            ExportData data = new ExportData(_layerManager.ToList(), _relationshipList);
+            using (StreamWriter sw = new StreamWriter(path))
+            {
+                sw.Write(JsonConvert.SerializeObject(data, _serializerSettings));
+            }
+        }
+
+        public string OpenPath()
         {
             SaveFileDialog sf = new SaveFileDialog();
             sf.FileName = "Save.json";
             sf.Filter = "JSON (*.json)|*.json";
             if (sf.ShowDialog() != DialogResult.OK)
-                return;
-
-            ExportData data = new ExportData(_layerManager.ToList(), _relationshipList);
-            using (StreamWriter sw  = new StreamWriter(sf.FileName))
-            {
-                sw.Write(JsonConvert.SerializeObject(data, _serializerSettings));
-            }
+                return "";
+            return sf.FileName;
         }
     }
 }

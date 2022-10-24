@@ -11,6 +11,7 @@ namespace UMLCreator.Export
         protected LayerManager _layerManager { get; set; }
         protected List<Relationships.Relationship> _relationshipList { get; set; }
         protected PictureBox _pictureBox { get; set; }
-        public void Export();
+        public void Export(string path);
+        public string OpenPath();
     }
 }

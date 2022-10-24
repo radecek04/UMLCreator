@@ -26,22 +26,24 @@ namespace UMLCreator
             InitializeComponent();
 
             // Tester Classes
-            Class c = new Class("Class Test", false);
+            Class c = new Class("Class Test");
             c.Properties.Add(new Property(AccessModifier.Public, "int", "Property"));
             c.Properties.Add(new Property(AccessModifier.Public, "int", "Property"));
             c.Properties.Add(new Property(AccessModifier.Public, "int", "Property"));
             c.Methods.Add(new Method(AccessModifier.Public, "int", "Property"));
             c.Methods.Add(new Method(AccessModifier.Public, "int", "Property"));
             c.Methods.Add(new Method(AccessModifier.Public, "int", "Property"));
+            c.Type = ObjectType.Static;
             c.Adjust();
             _layers.Add(c);
-            c = new Class("Class Test 2", false);
+            c = new Class("Class Test 2");
             c.Properties.Add(new Property(AccessModifier.Public, "int", "Property"));
             c.Properties.Add(new Property(AccessModifier.Public, "int", "Property"));
             c.Properties.Add(new Property(AccessModifier.Public, "int", "Property"));
             c.Methods.Add(new Method(AccessModifier.Public, "int", "Property"));
             c.Methods.Add(new Method(AccessModifier.Public, "int", "Property"));
             c.Methods.Add(new Method(AccessModifier.Public, "int", "Property"));
+            c.Type = ObjectType.Interface;
             c.Adjust();
             _layers.Add(c);
         }
@@ -141,7 +143,7 @@ namespace UMLCreator
 
                         if (e.Clicks == 2)
                         {
-                            Relationship frm = new Relationship(_selectedRelationship.StartClass);
+                            Relationship frm = new Relationship(_selectedRelationship.StartClass, line);
                             if (frm.ShowDialog() == DialogResult.OK)
                             {
                                 frm.relationship.EndClass = _selectedRelationship.EndClass;
@@ -207,7 +209,7 @@ namespace UMLCreator
                 }
                 else
                 {
-                    MessageBox.Show("Those classes cant be connected.", "Warning");
+                    MessageBox.Show("Those classes cant be connected.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
 
@@ -311,7 +313,7 @@ namespace UMLCreator
         private void btn_Add_Click(object sender, EventArgs e)
         {
             // Create empty class
-            Class c = new Class("", false);
+            Class c = new Class("");
             EditForm ef = new EditForm(c, _layers);
             if(ef.ShowDialog() == DialogResult.OK)
             {
@@ -363,14 +365,7 @@ namespace UMLCreator
                 _selectedRelationship.LinePen = _selectedRelationship.LinePen == _settings.LINE_PEN_DASHED_SELECTED ? _settings.LINE_PEN_DASHED : _settings.LINE_PEN;
             _selectedRelationship = null;
 
-            //JsonService service = new JsonService(_layers, _relationships);
-            //service.Export();
-
-            //PngExport png = new PngExport(_layers, _relationships, pictureBox1);
-            //png.Export();
-
-            CodeExport code = new CodeExport(_layers, _relationships, "Diagram");
-            code.Export();
+            new ExportSelect(_layers, _relationships, pictureBox1).ShowDialog();
         }
 
         private void btn_Import_Click(object sender, EventArgs e)

@@ -18,17 +18,24 @@ namespace UMLCreator.Export
             _relationshipList = relationships;
             _pictureBox = pb;
         }
-        public void Export()
+
+        public void Export(string path)
+        {
+            Bitmap bmp = new Bitmap(_pictureBox.DisplayRectangle.Width, _pictureBox.DisplayRectangle.Height);
+            _pictureBox.DrawToBitmap(bmp, _pictureBox.DisplayRectangle);
+            bmp.Save(path);
+        }
+
+        public string OpenPath()
         {
             SaveFileDialog sf = new SaveFileDialog();
             sf.FileName = "Diagram.png";
             sf.Filter = "PNG (*.png)|*.png";
-            if(sf.ShowDialog() == DialogResult.OK)
+            if (sf.ShowDialog() == DialogResult.OK)
             {
-                Bitmap bmp = new Bitmap(_pictureBox.DisplayRectangle.Width, _pictureBox.DisplayRectangle.Height);
-                _pictureBox.DrawToBitmap(bmp, _pictureBox.DisplayRectangle);
-                bmp.Save(sf.FileName);
+                return sf.FileName;
             }
+            return "";
         }
     }
 }
